@@ -299,19 +299,107 @@
                     }
                 }
             }).trigger('resize');
+
+
+
+
+            // Раскрытие карточек на экранах меньше чем 1440px
+
+            // Получаем кнопку по селектору
+            let button = document.querySelector('.project-buttons');
+            // Отслеживаем клик по кнопке
+            button.addEventListener('click', function () {
+                // Переменная, по которой узнаем запущен слайдер или нет.
+                // Храним её в data
+                let init = $(".project-items").data('init-slider');
+                // Если на мобильном
+                if (window.innerWidth < 1440) {
+                    // Если слайдер запущен
+                    if (init == 1) {
+                        // Грохаем слайдер и записываем в data init-slider = 0
+                        $('.project-items').slick('unslick').data({
+                            'init-slider': 0
+                        });
+                        $(this).text('Скрыть все проекты');
+                        // Иначе на десктопе
+                    } else {
+                        // Активируем слайдер и записываем в data init-slider = 1
+                        $('.project-items').slick({
+                            infinite: true,
+                            dots: true,
+                            slidesToShow: 2,
+                            slidesToScroll: 2,
+                            arrows: false,
+                            responsive: [{
+                                breakpoint: 768,
+                                settings: {
+                                    slidesToShow: 1,
+                                    slidesToScroll: 1
+                                }
+                            }]
+                        }).data({
+                            'init-slider': 1
+                        });
+                        $(this).text('Смотреть все проекты');
+                    }
+                }
+            });
+
+
+            $(window).on('resize', function (e) {
+                // Переменная, по которой узнаем запущен слайдер или нет.
+                // Храним её в data
+                let init = $(".project-items").data('init-slider');
+                // Если мобильный
+                if ((window.innerWidth < 1440) && ($(".project-items")
+                        .hasClass("open") || $(".project-view").hasClass("full") || $(
+                            ".project-items").hasClass("full-margin"))) {
+                    $('.project-items').slick('unslick').data({
+                        'init-slider': 0
+                    });
+                }
+            });
+
+
+
         });
 
-        // Раскрытие проектов
+        // Раскрытие карточек на десктопе
         $(function () {
+            // Действие при клике на кнопку
             $('.project-buttons').click(function () {
-                $('.project-items').toggleClass('open');
+
+                if (window.innerWidth > 1439) {
+                    // Добавляется класс с видимыми карточками
+                    $('.project-items').toggleClass('open');
+                }
+                // if (window.innerWidth > 1439) {
+                //     if 
+                // }
+
+                // Добавляется класс с выравниванием
                 $('.project-view').toggleClass('full');
+                // Добавляется класс с выравниванием отступов
                 $('.project-items').toggleClass('full-margin');
+                // Добавляется класс с выравниванием точек
                 $('slick-dots').css('display', 'none');
-                $('.project-items').slick('unslick');
+
+                // Если контейнер с карточками имеет класс "open"
+                if ($(".project-items").hasClass("open") || $(".project-view").hasClass("full") || $(
+                        ".project-items").hasClass("full-margin")) {
+                    // Пишем на кнопке: скрыть все проекты
+                    $('.project-buttons').text('Скрыть все проекты');
+                    // Иначе не имеет класса "open" контейнер с карточками
+                } else {
+                    // Пишем на кнопке: Смотреть все проекты
+                    $('.project-buttons').text('Смотреть все проекты');
+                }
+
+
+
+
             });
         });
-        
     </script>
 </body>
 
